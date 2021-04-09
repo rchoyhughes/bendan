@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>Log in to BENDAN</title>
+    <title>Log In to BENDAN</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/login-style.css') }}" type="text/css"/>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"/>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
@@ -10,6 +10,9 @@
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap');
     </style>
+    <link rel="shortcut icon" type="image/png" sizes="32x32" href="{{url_for('static', filename='img/favicon-32x32.png') }}">
+    <link rel="shortcut icon" type="image/png" sizes="16x16" href="{{url_for('static', filename='img/favicon-16x16.png') }}">
+    <meta name="theme-color" content="#ffffff">
   </head>
   <body>
   {% with messages = get_flashed_messages() %}
@@ -33,7 +36,7 @@
   <form action="login-submit" method="post">
     <input type="text" title="username" id="username" name="username" placeholder="username" />
     <input type="password" title="password" id="password" name="password" placeholder="password" />
-    <button type="submit" class="btn">Login</button>
+    <button type="submit" class="btn">Login / Register</button>
     <a class="profile" href="#">add a profile pic</a>
   </form>
 </div><!--end log form -->
