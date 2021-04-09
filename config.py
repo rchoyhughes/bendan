@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.7
+#!/usr/bin/python2.7
 # vim: set fileencoding=utf8 noexpandtab tabstop=4 shiftwidth=4:   # boilerplate
 
 """

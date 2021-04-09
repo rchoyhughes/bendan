@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.7
+#!/usr/bin/python2.7
 # vim: fileencoding=utf8
 from __future__ import unicode_literals, division
 """

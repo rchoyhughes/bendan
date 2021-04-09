@@ -2,39 +2,28 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>Login to BENDAN</title>
+    <title>Log in to BENDAN</title>
     <link rel="stylesheet" href="../styles/login-style.css" type="text/css"/>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"/>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap');
+    </style>
   </head>
   <body>
 
   </body>
 
-
-<div class="wrapper fadeInDown">
-  <div id="formContent">
-    <!-- Tabs Titles -->
-
-    <!-- Icon 
-    <div class="fadeIn first">
-      <img src="http://danielzawadzki.com/codepen/01/icon.svg" id="icon" alt="User Icon" />
-    </div>-->
-
-    <!-- Login Form -->
-    <form>
-      <input type="text" id="login" class="fadeIn second" name="login" placeholder="login">
-      <input type="text" id="password" class="fadeIn third" name="login" placeholder="password">
-      <input type="submit" class="fadeIn fourth" value="Log In">
-    </form>
-
-    <!-- Remind Passowrd -->
-    <div id="formFooter">
-      <a class="underlineHover" href="#">Forgot Password?</a>
-    </div>
-
+  <div class = "logo">
+    <img src="../data/bendan_whitebg.png" alt="BENDAN logo" class="center">
   </div>
-</div>
-</html>
+
+<div class="log-form">
+  <h2>Log in to Bendan</h2>
+  <form>
+    <input type="text" title="username" placeholder="username" />
+    <input type="password" title="username" placeholder="password" />
+    <button type="submit" class="btn">Login</button>
+  </form>
+</div><!--end log form -->
