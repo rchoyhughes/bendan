@@ -2,10 +2,10 @@ import hashlib
 import codecs
 
 
-def hash_string(string: str):
+def hash_string(string: str) -> str:
     hexstr = hashlib.sha3_224(string.encode()).hexdigest()
     b64 = codecs.encode(codecs.decode(hexstr, 'hex'), 'base64').decode()
-    return b64
+    return b64.strip()
 
 
 if __name__ == '__main__':

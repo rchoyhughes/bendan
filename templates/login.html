@@ -12,7 +12,16 @@
     </style>
   </head>
   <body>
-
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <script>
+      var messages = {{ messages | safe }};
+      for (var i=0; i<messages.length; i++) {
+        alert(messages[i]);
+      }
+    </script>
+  {% endif %}
+{% endwith %}
   </body>
 
   <div class = "logo">
@@ -21,9 +30,9 @@
 
 <div class="log-form">
   <h2>Log in to Bendan</h2>
-  <form>
-    <input type="text" title="username" placeholder="username" />
-    <input type="password" title="username" placeholder="password" />
+  <form action="login-submit" method="post">
+    <input type="text" title="username" id="username" name="username" placeholder="username" />
+    <input type="password" title="password" id="password" name="password" placeholder="password" />
     <button type="submit" class="btn">Login</button>
     <a class="profile" href="#">add a profile pic</a>
   </form>
