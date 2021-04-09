@@ -83,7 +83,7 @@ body {
 }
 .log-form .btn {
   display: inline-block;
-  background: #fa0c2e;
+  background: #ff0c0c;
   border: 1px solid #c40219;
   padding: 0.5em 2em;
   color: white;
@@ -91,7 +91,7 @@ body {
   box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.2);
 }
 .log-form .btn:hover {
-  background: #ff2d2d;
+  background: #ff5151;
 }
 .log-form .btn:active {
   background: #ff3232;
