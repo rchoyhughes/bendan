@@ -69,6 +69,7 @@ body {
 }
 .log-form input {
   display: block;
+  font-family: "Roboto Condensed", sans-serif;
   margin: auto auto;
   width: 100%;
   margin-bottom: 2em;
@@ -83,10 +84,12 @@ body {
 }
 .log-form .btn {
   display: inline-block;
+  font-family: "Roboto Condensed", sans-serif;
   background: #ff0c0c;
   border: 1px solid #c40219;
   padding: 0.5em 2em;
   color: white;
+  text-transform: uppercase;
   margin-right: 0.5em;
   box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.2);
 }
@@ -99,4 +102,20 @@ body {
 }
 .log-form .btn:focus {
   outline: none;
+}
+.log-form .profile {
+  color: #ff0f0f;
+  text-transform: uppercase;
+  font-family: "Roboto Condensed", sans-serif;
+  line-height: 0.5em;
+  position: relative;
+  top: 1.75em;
+  text-decoration: none;
+  font-size: 1em;
+  margin: 0;
+  padding: 0;
+  float: right;
+}
+.log-form .profile:hover {
+  color: #b80000;
 }
