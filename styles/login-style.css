@@ -58,7 +58,7 @@ body {
   font-family: 'Roboto Condensed', sans-serif;
   font-size: 1.35em;
   display: block;
-  background: #2a2a2a;
+  background: #151515;
   width: 100%;
   text-transform: uppercase;
   padding: 0.75em 1em 0.75em 1.5em;
@@ -77,7 +77,7 @@ body {
   border: none;
   border-bottom: 1px solid #eaeaea;
   padding-bottom: 1.25em;
-  color: #757575;
+  color: #3e3e3e;
 }
 .log-form input:focus {
   outline: none;
