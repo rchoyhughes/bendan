@@ -21,6 +21,20 @@ except Error as e:
     print(e)
 
 
+@app.route('/<private_id>/profile', methods=['GET', 'POST'])
+def profile(private_id):
+    conn = sqlite3.connect('data/database.db')
+    cursor = conn.cursor()
+    sql = 'SELECT username from users where private_id=?'
+    cursor.execute(sql, (private_id,))
+    return flask.render_template('profile.html', username=cursor.fetchall()[0][0])
+
+
+@app.route('/profile', methods=['GET', 'POST'])
+def default_profile():
+    return flask.render_template('profile.html')
+
+
 @app.route('/login-submit', methods=['POST'])
 def login_submit():
     data = request.form
@@ -35,14 +49,14 @@ def login_submit():
         if len(cursor.fetchall()) == 0:
             flash('That username is already taken. Please choose another one.')
             return flask.redirect('/register')
-        flash('You have been signed in as ' + data['username'] + '.')
-        return flask.redirect('/register')
+        # flash('You have been signed in as ' + data['username'] + '.')
+        return flask.redirect('/' + private_id + '/profile')
     else:
         sql = 'INSERT INTO users(username, private_id) VALUES (?,?)'
         cursor.execute(sql, (data['username'], private_id))
         conn.commit()
-        flash('Thank you for registering, ' + data['username'] + '.')
-        return flask.redirect('/register')
+        # flash('Thank you for registering, ' + data['username'] + '.')
+        return flask.redirect('/' + private_id + '/profile')
 
 
 @app.route('/', methods=['GET', 'POST'])

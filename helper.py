@@ -1,11 +1,12 @@
 import hashlib
 import codecs
+import base64
 
 
 def hash_string(string: str) -> str:
-    hexstr = hashlib.sha3_224(string.encode()).hexdigest()
-    b64 = codecs.encode(codecs.decode(hexstr, 'hex'), 'base64').decode()
-    return b64.strip()
+    hashstr = hashlib.sha3_224(string.encode()).digest()
+    b64 = base64.urlsafe_b64encode(hashstr).decode()
+    return b64[:len(b64) - 2]
 
 
 if __name__ == '__main__':
