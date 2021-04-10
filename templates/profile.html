@@ -17,7 +17,7 @@
       <a class="navbar-brand" href="#">
             <img src="{{ url_for('static', filename='img/bendan_transparentbg.svg') }}" alt="" width="180">
       </a>
-      <form class"form-inline"></form>
+      <form class="form-inline"></form>
       <button class="btn btn-danger navbar-btn" href="#">CREATE A POST</button>
     </form>
     </div>
@@ -25,7 +25,8 @@
   
   <!-- Page Content -->
   <div class="container">
-    <h1 class="display-3">Welcome, {{username}}.</h1>
+      <br>
+      <h1 class="display-3" style="font-weight: 400"><span>Hello,</span><span style="color: #ff0f0f;"> {{username}}.</span></h1>
     <p>The logo in the navbar is now a default Bootstrap feature in Bootstrap 4! Make sure to set the width and height of the logo within the HTML or with CSS. For best results, use an SVG image as your logo.</p>
   </div>
   <!-- /.container -->

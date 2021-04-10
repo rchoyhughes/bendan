@@ -38,11 +38,12 @@ def default_profile():
 @app.route('/login-submit', methods=['POST'])
 def login_submit():
     data = request.form
+    username = data['username'].lower()
     conn = sqlite3.connect('data/database.db')
     cursor = conn.cursor()
     sql = 'SELECT * from users where username=?'
-    cursor.execute(sql, (data['username'],))
-    private_id = hash_string(data['username'] + data['password'])
+    cursor.execute(sql, (username,))
+    private_id = hash_string(username + data['password'])
     if len(cursor.fetchall()) != 0:
         sql = 'SELECT * from users where private_id=?'
         cursor.execute(sql, (private_id,))
@@ -53,7 +54,7 @@ def login_submit():
         return flask.redirect('/' + private_id + '/profile')
     else:
         sql = 'INSERT INTO users(username, private_id) VALUES (?,?)'
-        cursor.execute(sql, (data['username'], private_id))
+        cursor.execute(sql, (username, private_id))
         conn.commit()
         # flash('Thank you for registering, ' + data['username'] + '.', 'success')
         return flask.redirect('/' + private_id + '/profile')
