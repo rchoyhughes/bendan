@@ -1,5 +1,4 @@
 import hashlib
-import codecs
 import base64
 
 
