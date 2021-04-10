@@ -47,15 +47,15 @@ def login_submit():
         sql = 'SELECT * from users where private_id=?'
         cursor.execute(sql, (private_id,))
         if len(cursor.fetchall()) == 0:
-            flash('That username is already taken. Please choose another one.')
+            flash('That username is already taken, or the password was incorrect. Please try again.', 'danger')
             return flask.redirect('/register')
-        # flash('You have been signed in as ' + data['username'] + '.')
+        # flash('You have been signed in as ' + data['username'] + '.', 'success')
         return flask.redirect('/' + private_id + '/profile')
     else:
         sql = 'INSERT INTO users(username, private_id) VALUES (?,?)'
         cursor.execute(sql, (data['username'], private_id))
         conn.commit()
-        # flash('Thank you for registering, ' + data['username'] + '.')
+        # flash('Thank you for registering, ' + data['username'] + '.', 'success')
         return flask.redirect('/' + private_id + '/profile')
 
 
