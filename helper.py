@@ -1,5 +1,8 @@
 import hashlib
 import base64
+from datetime import timezone
+import datetime
+import math
 
 
 def hash_string(string: str) -> str:
@@ -8,6 +11,13 @@ def hash_string(string: str) -> str:
     return b64[:len(b64) - 2]
 
 
+def get_timestamp():
+    dt = datetime.datetime.now(timezone.utc)
+    utc_time = dt.replace(tzinfo=timezone.utc)
+    utc_timestamp = utc_time.timestamp()
+    return math.floor(utc_timestamp)
+
+
 if __name__ == '__main__':
-    s = hash_string('usernamepassword')
+    s = get_timestamp()
     print(s)

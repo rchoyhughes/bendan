@@ -22,6 +22,22 @@ except Error as e:
     print(e)
 
 
+@app.route('/<private_id>/create-submit', methods=['POST'])
+def create_submit(private_id):
+    timestamp = get_timestamp()
+    data = request.form
+    conn = sqlite3.connect('data/database.db')
+    cursor = conn.cursor()
+    sql = 'SELECT username from users where private_id=?'
+    cursor.execute(sql, (private_id,))
+    username = cursor.fetchall()[0][0]
+    post_id = hash_string(username + str(timestamp))
+    sql = 'INSERT INTO posts(post_id, title, content, username, timestamp, upvotes) VALUES (?, ?, ?, ?, ?, ?)'
+    cursor.execute(sql, (post_id, data['title'], data['content'], username, timestamp, 0))
+    conn.commit()
+    return flask.redirect('/' + private_id + '/profile')
+
+
 @app.route('/<private_id>/create', methods=['GET', 'POST'])
 def create(private_id):
     return flask.render_template('create.html', private_id=private_id)
