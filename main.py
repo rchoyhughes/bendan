@@ -7,6 +7,7 @@ from flask import flash
 
 app = flask.Flask(__name__)
 app.secret_key = 'some secret key'
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = -1
 
 c = None
 try:
@@ -31,8 +32,13 @@ def profile(private_id):
 
 
 @app.route('/profile', methods=['GET', 'POST'])
-def default_profile():
+def default_create():
     return flask.render_template('profile.html')
+
+
+@app.route('/create', methods=['GET', 'POST'])
+def default_profile():
+    return flask.render_template('create.html')
 
 
 @app.route('/login-submit', methods=['POST'])

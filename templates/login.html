@@ -14,7 +14,7 @@
     <link rel="shortcut icon" type="image/png" sizes="16x16" href="{{url_for('static', filename='img/favicon-16x16.png') }}">
     <meta name="theme-color" content="#ffffff">
   </head>
-  <body>
+  <body style="font-family: 'Roboto Condensed', sans-serif">
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     {% for category, message in messages %}
