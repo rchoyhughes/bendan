@@ -22,6 +22,11 @@ except Error as e:
     print(e)
 
 
+@app.route('/<private_id>/create', methods=['GET', 'POST'])
+def create(private_id):
+    return flask.render_template('create.html', private_id=private_id)
+
+
 @app.route('/<private_id>/profile', methods=['GET', 'POST'])
 def profile(private_id):
     conn = sqlite3.connect('data/database.db')
