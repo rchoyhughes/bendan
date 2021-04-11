@@ -49,7 +49,10 @@ def profile(private_id):
     cursor = conn.cursor()
     sql = 'SELECT username from users where private_id=?'
     cursor.execute(sql, (private_id,))
-    return flask.render_template('profile.html', username=cursor.fetchall()[0][0])
+    fetch = cursor.fetchall()
+    if len(fetch) == 0:
+        return flask.render_template('error.html')
+    return flask.render_template('profile.html', username=fetch[0][0])
 
 
 @app.route('/profile', methods=['GET', 'POST'])
