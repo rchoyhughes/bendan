@@ -18,7 +18,11 @@
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     {% for category, message in messages %}
-      <div class="alert alert-{{ category }}"> {{ message }} </div>
+    <div id="message">
+      <div class="alert alert-{{ category }}"> {{ message }}
+      </div>
+    </div>
+  </div> 
     {% endfor %}
   {% endif %}
 {% endwith %}
@@ -31,8 +35,8 @@
 <div class="log-form">
   <h2>Log in to Bendan</h2>
   <form action="login-submit" method="post">
-    <input type="text" title="username" id="username" name="username" placeholder="username" />
-    <input type="password" title="password" id="password" name="password" placeholder="password" />
+    <input type="text" title="username" id="username" name="username" placeholder="username" required>
+    <input type="password" title="password" id="password" name="password" placeholder="password" required>
     <button type="submit" class="btn">Login / Register</button>
     <a class="profile" href="#">add a profile pic</a>
   </form>
