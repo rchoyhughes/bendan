@@ -49,38 +49,44 @@ def profile(private_id):
     pid = private_id
     conn = sqlite3.connect('data/database.db')
     cursor = conn.cursor()
-    #get username from pid
+    # get username from pid
     uname = cursor.execute('SELECT * from users where private_id = ?', (pid,)).fetchone()
     uname = uname[0]
 
-    #get posts with username
+    # get posts with username
     sql = 'SELECT * from posts where username = ?'
     posts = cursor.execute(sql, (uname,)).fetchall()
     if len(posts) == 0:
         return flask.render_template('error.html')
-    post_dict = {}
+    post_list = []
     for element in posts:
-        post_dict.update({element[0]: [element[1],element[2],datetime.fromtimestamp(element[4]),element[5]]})
-    return flask.render_template('profile.html', username=uname, data = post_dict)
+        post_list.append([element[0], element[1], element[2], time_string(element[4]), element[5]])
+    post_list.reverse()
+    return flask.render_template('profile.html', username=uname, data=post_list)
 
 
 @app.route('/profile', methods=['GET', 'POST'])
 def default_create():
     return flask.render_template('profile.html')
 
+
 @app.route('/post/<post_id>', methods=['GET', 'POST'])
 def post_view(post_id):
     pid = post_id
     conn = sqlite3.connect('data/database.db')
     cursor = conn.cursor()
-    #get post from pid
+    # get post from pid
     found = cursor.execute('SELECT * from posts where post_id = ?', (pid,)).fetchone()
-    found = [found[0],found[1],found[2],datetime.fromtimestamp(found[4]),'Upvotes: '+str(found[5])]
-    return flask.render_template('post.html', post = found)
+    if found is None:
+        return flask.render_template('error.html')
+    found = [found[0], found[1], found[2], time_string(found[4]), found[5]]
+    return flask.render_template('post.html', post=found)
+
 
 @app.route('/post', methods=['GET', 'POST'])
 def default_post():
     return flask.render_template('post.html')
+
 
 @app.route('/create', methods=['GET', 'POST'])
 def default_profile():

@@ -30,14 +30,14 @@
       <br>
       <h1 class="display-3" style="font-weight: 400"><span>Hello,</span><span style="color: #ff0f0f;"> {{username}}.</span></h1>
       <br><br>
-      {% for key,value in data.items() %}
-      <div class ="card">
-        <a class="card-block stretched-link text-decoration-none" href="/post/{{key}}"></a>
-          <h5 class="card-header font-weight-bold">{{value[0]}}</h5>
+      {% for post in data %}
+      <div class ="card" style="box-shadow: 0 0 5px 0 rgba(100, 100, 100, 0.26);">
+        <a class="card-block stretched-link text-decoration-none" href="/post/{{post[0]}}"></a>
+          <h5 class="card-header font-weight-bold">{{post[1]}}</h5>
           <div class="card-body">
-            <p class="card-text">{{value[1]}}</p>
-            <footer class="text-muted">Upvotes: {{value[3]}}</footer>
-            <footer class="text-muted"><em>{{value[2]}}</em></footer>
+            <p class="card-text">{{post[2]}}</p>
+            <footer class="text-muted">Upvotes: {{post[4]}}</footer>
+            <footer class="text-muted"><em>{{post[3]}}</em></footer>
           </div>
         </a>
       </div>
