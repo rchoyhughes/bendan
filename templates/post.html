@@ -28,27 +28,24 @@
   <!-- Page Content -->
   <div class="container">
       <br>
-      <h1 class="display-3" style="font-weight: 400"><span>Hello,</span><span style="color: #ff0f0f;"> {{username}}.</span></h1>
-      {% for key,value in data.items() %}
-      <hr>
+      <!-- <h1 class="display-3" style="font-weight: 400"><span>Hello,</span><span style="color: #ff0f0f;"> {{username}}.</span></h1> -->
       <table>
           <tr>
-            <td>{{key}}</td>
+            <td>{{post[0]}}</td>
           </tr>
           <tr>
-            <td>{{value[0]}}</td>
+            <td>{{post[1]}}</td>
           </tr>
           <tr>
-            <td>{{value[1]}}</td>
+            <td>{{post[2]}}</td>
           </tr>
           <tr>
-            <td>{{value[2]}}</td>
+            <td>{{post[3]}}</td>
           </tr>
           <tr>
-            <td>Upvotes: {{value[3]}}</td>
+            <td>{{post[4]}}</td>
           </tr>
-      </table>
-      {% endfor %}
+        </table>
   </div>
   <!-- /.container -->
 </body>

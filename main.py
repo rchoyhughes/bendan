@@ -4,6 +4,7 @@ import sqlite3
 from sqlite3 import Error
 from flask import request
 from flask import flash
+from datetime import datetime
 
 app = flask.Flask(__name__)
 app.secret_key = 'some secret key'
@@ -45,20 +46,41 @@ def create(private_id):
 
 @app.route('/<private_id>/profile', methods=['GET', 'POST'])
 def profile(private_id):
+    pid = private_id
     conn = sqlite3.connect('data/database.db')
     cursor = conn.cursor()
-    sql = 'SELECT username from users where private_id=?'
-    cursor.execute(sql, (private_id,))
-    fetch = cursor.fetchall()
-    if len(fetch) == 0:
+    #get username from pid
+    uname = cursor.execute('SELECT * from users where private_id = ?', (pid,)).fetchone()
+    uname = uname[0]
+
+    #get posts with username
+    sql = 'SELECT * from posts where username = ?'
+    posts = cursor.execute(sql, (uname,)).fetchall()
+    if len(posts) == 0:
         return flask.render_template('error.html')
-    return flask.render_template('profile.html', username=fetch[0][0])
+    post_dict = {}
+    for element in posts:
+        post_dict.update({element[0]: [element[1],element[2],datetime.fromtimestamp(element[4]),element[5]]})
+    return flask.render_template('profile.html', username=uname, data = post_dict)
 
 
 @app.route('/profile', methods=['GET', 'POST'])
 def default_create():
     return flask.render_template('profile.html')
 
+@app.route('/post/<post_id>', methods=['GET', 'POST'])
+def post_view(post_id):
+    pid = post_id
+    conn = sqlite3.connect('data/database.db')
+    cursor = conn.cursor()
+    #get post from pid
+    found = cursor.execute('SELECT * from posts where post_id = ?', (pid,)).fetchone()
+    found = [found[0],found[1],found[2],datetime.fromtimestamp(found[4]),'Upvotes: '+str(found[5])]
+    return flask.render_template('post.html', post = found)
+
+@app.route('/post', methods=['GET', 'POST'])
+def default_post():
+    return flask.render_template('post.html')
 
 @app.route('/create', methods=['GET', 'POST'])
 def default_profile():
