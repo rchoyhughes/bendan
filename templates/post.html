@@ -19,8 +19,6 @@
       <a class="navbar-brand" href="#">
             <img src="{{ url_for('static', filename='img/bendan_transparentbg.svg') }}" alt="" width="180">
       </a>
-      <form class="form-inline"></form>
-      <button class="btn btn-danger navbar-btn" onclick="window.location.href='create'">CREATE A POST</button>
     </form>
     </div>
   </nav>
@@ -28,24 +26,16 @@
   <!-- Page Content -->
   <div class="container">
       <br>
-      <!-- <h1 class="display-3" style="font-weight: 400"><span>Hello,</span><span style="color: #ff0f0f;"> {{username}}.</span></h1> -->
-      <table>
-          <tr>
-            <td>{{post[0]}}</td>
-          </tr>
-          <tr>
-            <td>{{post[1]}}</td>
-          </tr>
-          <tr>
-            <td>{{post[2]}}</td>
-          </tr>
-          <tr>
-            <td>{{post[3]}}</td>
-          </tr>
-          <tr>
-            <td>{{post[4]}}</td>
-          </tr>
-        </table>
+      <div class ="card">
+          <h5 class="card-header font-weight-bold">{{post[1]}}</h5>
+          <div class="card-body">
+            <p class="card-text">{{post[2]}}</p>
+            <footer class="text-muted">{{post[4]}}</footer>
+            <footer class="text-muted"><em>{{post[3]}}</em></footer>
+          </div>
+        </a>
+      </div>
+      <br>
   </div>
   <!-- /.container -->
 </body>
