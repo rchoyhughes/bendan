@@ -4,7 +4,6 @@ import sqlite3
 from sqlite3 import Error
 from flask import request
 from flask import flash
-from datetime import datetime
 
 app = flask.Flask(__name__)
 app.secret_key = 'some secret key'
@@ -21,6 +20,11 @@ try:
         c.executescript(schema.read())
 except Error as e:
     print(e)
+
+
+@app.errorhandler(404)
+def e404(e):
+    return flask.render_template('error.html'), 404
 
 
 @app.route('/<private_id>/create-submit', methods=['POST'])
@@ -51,13 +55,13 @@ def profile(private_id):
     cursor = conn.cursor()
     # get username from pid
     uname = cursor.execute('SELECT * from users where private_id = ?', (pid,)).fetchone()
+    if uname is None:
+        flask.abort(404)
     uname = uname[0]
 
     # get posts with username
     sql = 'SELECT * from posts where username = ?'
     posts = cursor.execute(sql, (uname,)).fetchall()
-    if len(posts) == 0:
-        return flask.render_template('error.html')
     post_list = []
     for element in posts:
         post_list.append([element[0], element[1], element[2], time_string(element[4]), element[5]])
@@ -78,7 +82,7 @@ def post_view(post_id):
     # get post from pid
     found = cursor.execute('SELECT * from posts where post_id = ?', (pid,)).fetchone()
     if found is None:
-        return flask.render_template('error.html')
+        flask.abort(404)
     found = [found[0], found[1], found[2], time_string(found[4]), found[5]]
     return flask.render_template('post.html', post=found)
 

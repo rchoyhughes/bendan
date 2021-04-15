@@ -43,6 +43,10 @@
       </div>
       <br>
       {% endfor %}
+      {% if data|length == 0 %} 
+      <h3 class="display-4" style="font-weight: 400;">You haven't posted anything yet.</h3><br><br>
+      <h3 class="display-4" >Click the <span style="color: #ff0f0f;">button</span> in the <span style="color: #ff0f0f;">top right corner</span> to make your first post.</h3>
+      {% endif %}
   </div>
   <!-- /.container -->
 </body>
