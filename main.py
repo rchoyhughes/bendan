@@ -22,9 +22,10 @@ except Error as e:
     print(e)
 
 
+@app.errorhandler(405)
 @app.errorhandler(404)
 def e404(e):
-    return flask.render_template('error.html'), 404
+    return flask.render_template('error.html')
 
 
 @app.route('/<private_id>/create-submit', methods=['POST'])

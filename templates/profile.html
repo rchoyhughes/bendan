@@ -37,15 +37,16 @@
           <div class="card-body">
             <p class="card-text">{{post[2]}}</p>
             <footer class="text-muted">Upvotes: {{post[4]}}</footer>
-            <footer class="text-muted"><em>{{post[3]}}</em></footer>
+            <footer class="text-muted" style="text-transform: uppercase"><em>{{post[3]}}</em></footer>
           </div>
         </a>
       </div>
       <br>
       {% endfor %}
       {% if data|length == 0 %} 
+      <br><br>
       <h3 class="display-4" style="font-weight: 400;">You haven't posted anything yet.</h3><br><br>
-      <h3 class="display-4" >Click the <span style="color: #ff0f0f;">button</span> in the <span style="color: #ff0f0f;">top right corner</span> to make your first post.</h3>
+      <h3 class="display-5" >Click the <span style="color: #ff0f0f;">button</span> in the <span style="color: #ff0f0f;">top right corner</span> to create a post.</h3>
       {% endif %}
   </div>
   <!-- /.container -->
