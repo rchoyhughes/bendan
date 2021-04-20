@@ -9,7 +9,6 @@ from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.automap import automap_base
 
-
 app = flask.Flask(__name__)
 app.secret_key = 'some secret key'
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = -1
@@ -17,7 +16,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data/database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 DATABASE = 'data/database.db'
 db = SQLAlchemy(app)
-
 
 Base = automap_base()
 Base.prepare(db.engine, reflect=True)
@@ -84,21 +82,16 @@ def create(private_id):
 
 @app.route('/<private_id>/profile', methods=['GET', 'POST'])
 def profile(private_id):
-    pid = private_id
-    conn = sqlite3.connect('data/database.db')
-    cursor = conn.cursor()
-    # get username from pid
-    uname = cursor.execute('SELECT * from users where private_id = ?', (pid,)).fetchone()
-    if uname is None:
+    q = db.session.query(Users).filter_by(private_id=private_id).first()
+    if q is None:
         flask.abort(404)
-    uname = uname[0]
+    uname = q.username
 
     # get posts with username
-    sql = 'SELECT * from posts where username = ?'
-    posts = cursor.execute(sql, (uname,)).fetchall()
+    q = db.session.query(Posts).filter_by(username=uname)
     post_list = []
-    for element in posts:
-        post_list.append([element[0], element[1], element[2], time_string(element[4]), element[5]])
+    for post in q:
+        post_list.append([post.post_id, post.title, post.content, time_string(post.timestamp), post.upvotes])
     post_list.reverse()
     return flask.render_template('profile.html', username=uname, data=post_list)
 
@@ -110,14 +103,10 @@ def default_create():
 
 @app.route('/post/<post_id>', methods=['GET', 'POST'])
 def post_view(post_id):
-    pid = post_id
-    conn = sqlite3.connect('data/database.db')
-    cursor = conn.cursor()
-    # get post from pid
-    found = cursor.execute('SELECT * from posts where post_id = ?', (pid,)).fetchone()
-    if found is None:
+    q = db.session.query(Posts).filter_by(post_id=post_id).first()
+    if q is None:
         flask.abort(404)
-    found = [found[0], found[1], found[2], time_string(found[4]), found[5]]
+    found = [q.post_id, q.title, q.content, time_string(q.timestamp), q.upvotes]
     return flask.render_template('post.html', post=found)
 
 
@@ -164,6 +153,7 @@ def test_alchemy():
     for r in results:
         print(r.content)
     return flask.redirect('/')
+
 
 if __name__ == '__main__':
     init_db()
