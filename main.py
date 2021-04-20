@@ -4,7 +4,8 @@ import sqlite3
 from flask import request
 from flask import flash
 from flask import g
-from flask_login import LoginManager
+import flask_login
+from flask_login import LoginManager, login_user, logout_user, login_required
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.automap import automap_base
 
@@ -15,11 +16,38 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data/database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 DATABASE = 'data/database.db'
 db = SQLAlchemy(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 Base = automap_base()
+
+
+class User(Base):
+    __tablename__ = 'users'
+
+    def is_authenticated(self):
+        return self.authenticated
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return self.private_id
+
+    def __repr__(self):
+        return '<User %r>' % (self.username)
+
+
 Base.prepare(db.engine, reflect=True)
-Users = Base.classes.users
 Posts = Base.classes.posts
+
+
+@login_manager.user_loader
+def user_loader(user_id):
+    return db.session.query(User).filter_by(private_id=user_id).first()
 
 
 def init_db():
@@ -45,9 +73,11 @@ def e404(e):
 def create_submit(private_id):
     timestamp = get_timestamp()
     data = request.form
-    username = db.session.query(Users).filter_by(private_id=private_id).first().username
+    username = db.session.query(User).filter_by(private_id=private_id).first().username
     post_id = hash_string(username + str(timestamp))
-    db.session.add(Posts(post_id=post_id, title=data['title'], content=data['content'], username=username, timestamp=timestamp, upvotes=0))
+    db.session.add(
+        Posts(post_id=post_id, title=data['title'], content=data['content'], username=username, timestamp=timestamp,
+              upvotes=0))
     db.session.commit()
     return flask.redirect('/' + private_id + '/profile')
 
@@ -59,7 +89,7 @@ def create(private_id):
 
 @app.route('/<private_id>/profile', methods=['GET', 'POST'])
 def profile(private_id):
-    q = db.session.query(Users).filter_by(private_id=private_id).first()
+    q = db.session.query(User).filter_by(private_id=private_id).first()
     if q is None:
         flask.abort(404)
     uname = q.username
@@ -87,12 +117,12 @@ def post_view(post_id):
     return flask.render_template('post.html', post=found)
 
 
-@app.route('/post', methods=['GET', 'POST'])
+@app.route('/test-post', methods=['GET', 'POST'])
 def default_post():
     return flask.render_template('post.html')
 
 
-@app.route('/create', methods=['GET', 'POST'])
+@app.route('/test-create', methods=['GET', 'POST'])
 def default_profile():
     return flask.render_template('create.html')
 
@@ -101,19 +131,24 @@ def default_profile():
 def login_submit():
     data = request.form
     username = data['username'].lower()
-    q = db.session.query(Users).filter_by(username=username).first()
+    user = db.session.query(User).filter_by(username=username).first()
     private_id = hash_string(username + data['password'])
-    if q is not None:
-        q = db.session.query(Users).filter_by(private_id=private_id).first()
-        if q is None:
+    if user is not None:
+        user = db.session.query(User).filter_by(private_id=private_id).first()
+        if user is None:
             flash('That username is already taken, or the password was incorrect. Please try again.', 'danger')
             return flask.redirect('/register')
         # flash('You have been signed in as ' + data['username'] + '.', 'success')
+        user.authenticated = True
+        login_user(user)
+        db.session.commit()
         return flask.redirect('/' + private_id + '/profile')
     else:
-        db.session.add(Users(username=username, private_id=private_id))
+        user = User(username=username, private_id=private_id, authenticated=True)
+        db.session.add(user)
         db.session.commit()
         # flash('Thank you for registering, ' + data['username'] + '.', 'success')
+        login_user(user)
         return flask.redirect('/' + private_id + '/profile')
 
 
@@ -121,6 +156,9 @@ def login_submit():
 @app.route('/login', methods=['GET', 'POST'])
 @app.route('/register', methods=['GET', 'POST'])
 def login():
+    flask_login.current_user.authenticated = False
+    db.session.commit()
+    logout_user()
     return flask.render_template('login.html')
 
 

@@ -3,6 +3,7 @@ pragma foreign_keys = ON;
 CREATE TABLE IF NOT EXISTS users (
     username text primary key,
     private_id text
+    authenticated boolean
 );
 
 CREATE TABLE IF NOT EXISTS posts (
