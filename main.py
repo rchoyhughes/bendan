@@ -37,6 +37,7 @@ def init_db():
         with app.open_resource('data/schema.sql', mode='r') as f:
             my_db.cursor().executescript(f.read())
         my_db.commit()
+        my_db.close()
 
 
 def query_db(query, args=(), one=False):
@@ -48,9 +49,7 @@ def query_db(query, args=(), one=False):
 
 @app.teardown_appcontext
 def close_connection(exception):
-    db = getattr(g, '_database', None)
-    if db is not None:
-        db.close()
+    db.session.close()
 
 
 @app.errorhandler(405)
@@ -63,15 +62,10 @@ def e404(e):
 def create_submit(private_id):
     timestamp = get_timestamp()
     data = request.form
-    conn = sqlite3.connect('data/database.db')
-    cursor = conn.cursor()
-    sql = 'SELECT username from users where private_id=?'
-    cursor.execute(sql, (private_id,))
-    username = cursor.fetchall()[0][0]
+    username = db.session.query(Users).filter_by(private_id=private_id).first().username
     post_id = hash_string(username + str(timestamp))
-    sql = 'INSERT INTO posts(post_id, title, content, username, timestamp, upvotes) VALUES (?, ?, ?, ?, ?, ?)'
-    cursor.execute(sql, (post_id, data['title'], data['content'], username, timestamp, 0))
-    conn.commit()
+    db.session.add(Posts(post_id=post_id, title=data['title'], content=data['content'], username=username, timestamp=timestamp, upvotes=0))
+    db.session.commit()
     return flask.redirect('/' + private_id + '/profile')
 
 
