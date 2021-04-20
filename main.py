@@ -5,7 +5,7 @@ from flask import request
 from flask import flash
 from flask import g
 import flask_login
-from flask_login import LoginManager, login_user, logout_user, login_required
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.automap import automap_base
 
@@ -82,11 +82,13 @@ def create_submit(private_id):
     return flask.redirect('/' + private_id + '/profile')
 
 
+@login_required
 @app.route('/<private_id>/create', methods=['GET', 'POST'])
 def create(private_id):
     return flask.render_template('create.html', private_id=private_id)
 
 
+@login_required
 @app.route('/<private_id>/profile', methods=['GET', 'POST'])
 def profile(private_id):
     q = db.session.query(User).filter_by(private_id=private_id).first()
@@ -103,11 +105,12 @@ def profile(private_id):
     return flask.render_template('profile.html', username=uname, data=post_list)
 
 
-@app.route('/profile', methods=['GET', 'POST'])
+@app.route('/test-profile', methods=['GET', 'POST'])
 def default_create():
     return flask.render_template('profile.html')
 
 
+@login_required
 @app.route('/post/<post_id>', methods=['GET', 'POST'])
 def post_view(post_id):
     q = db.session.query(Posts).filter_by(post_id=post_id).first()
@@ -156,7 +159,7 @@ def login_submit():
 @app.route('/login', methods=['GET', 'POST'])
 @app.route('/register', methods=['GET', 'POST'])
 def login():
-    flask_login.current_user.authenticated = False
+    current_user.authenticated = False
     db.session.commit()
     logout_user()
     return flask.render_template('login.html')
