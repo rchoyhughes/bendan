@@ -26,19 +26,19 @@ Posts = Base.classes.posts
 
 
 def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
-    db.row_factory = sqlite3.Row
-    return db
+    my_db = getattr(g, '_database', None)
+    if my_db is None:
+        my_db = g._database = sqlite3.connect(DATABASE)
+    my_db.row_factory = sqlite3.Row
+    return my_db
 
 
 def init_db():
     with app.app_context():
-        db = get_db()
+        my_db = get_db()
         with app.open_resource('data/schema.sql', mode='r') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
+            my_db.cursor().executescript(f.read())
+        my_db.commit()
 
 
 def query_db(query, args=(), one=False):
@@ -135,23 +135,18 @@ def default_profile():
 def login_submit():
     data = request.form
     username = data['username'].lower()
-    conn = sqlite3.connect('data/database.db')
-    cursor = conn.cursor()
-    sql = 'SELECT * from users where username=?'
-    cursor.execute(sql, (username,))
+    q = db.session.query(Users).filter_by(username=username).first()
     private_id = hash_string(username + data['password'])
-    if len(cursor.fetchall()) != 0:
-        sql = 'SELECT * from users where private_id=?'
-        cursor.execute(sql, (private_id,))
-        if len(cursor.fetchall()) == 0:
+    if q is not None:
+        q = db.session.query(Users).filter_by(private_id=private_id).first()
+        if q is None:
             flash('That username is already taken, or the password was incorrect. Please try again.', 'danger')
             return flask.redirect('/register')
         # flash('You have been signed in as ' + data['username'] + '.', 'success')
         return flask.redirect('/' + private_id + '/profile')
     else:
-        sql = 'INSERT INTO users(username, private_id) VALUES (?,?)'
-        cursor.execute(sql, (username, private_id))
-        conn.commit()
+        db.session.add(Users(username=username, private_id=private_id))
+        db.session.commit()
         # flash('Thank you for registering, ' + data['username'] + '.', 'success')
         return flask.redirect('/' + private_id + '/profile')
 
