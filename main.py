@@ -4,22 +4,55 @@ import sqlite3
 from sqlite3 import Error
 from flask import request
 from flask import flash
+from flask import g
+from flask_login import LoginManager
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.ext.automap import automap_base
+
 
 app = flask.Flask(__name__)
 app.secret_key = 'some secret key'
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = -1
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data/database.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+DATABASE = 'data/database.db'
+db = SQLAlchemy(app)
 
-c = None
-try:
-    c = sqlite3.connect('data/database.db').cursor()
-except Error as e:
-    print(e)
 
-try:
-    with open('data/schema.sql') as schema:
-        c.executescript(schema.read())
-except Error as e:
-    print(e)
+Base = automap_base()
+Base.prepare(db.engine, reflect=True)
+Users = Base.classes.users
+Posts = Base.classes.posts
+
+
+def get_db():
+    db = getattr(g, '_database', None)
+    if db is None:
+        db = g._database = sqlite3.connect(DATABASE)
+    db.row_factory = sqlite3.Row
+    return db
+
+
+def init_db():
+    with app.app_context():
+        db = get_db()
+        with app.open_resource('data/schema.sql', mode='r') as f:
+            db.cursor().executescript(f.read())
+        db.commit()
+
+
+def query_db(query, args=(), one=False):
+    cur = get_db().execute(query, args)
+    rv = cur.fetchall()
+    cur.close()
+    return (rv[0] if rv else None) if one else rv
+
+
+@app.teardown_appcontext
+def close_connection(exception):
+    db = getattr(g, '_database', None)
+    if db is not None:
+        db.close()
 
 
 @app.errorhandler(405)
@@ -130,5 +163,13 @@ def login():
     return flask.render_template('login.html')
 
 
+@app.route('/test-sqlalchemy', methods=['GET', 'POST'])
+def test_alchemy():
+    results = db.session.query(Posts).all()
+    for r in results:
+        print(r.content)
+    return flask.redirect('/')
+
 if __name__ == '__main__':
+    init_db()
     app.run(port=8001, host='127.0.0.1', debug=True, use_evalex=False)
