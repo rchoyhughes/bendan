@@ -1,7 +1,6 @@
 import flask
 from helper import *
 import sqlite3
-from sqlite3 import Error
 from flask import request
 from flask import flash
 from flask import g
@@ -23,28 +22,12 @@ Users = Base.classes.users
 Posts = Base.classes.posts
 
 
-def get_db():
-    my_db = getattr(g, '_database', None)
-    if my_db is None:
-        my_db = g._database = sqlite3.connect(DATABASE)
-    my_db.row_factory = sqlite3.Row
-    return my_db
-
-
 def init_db():
-    with app.app_context():
-        my_db = get_db()
-        with app.open_resource('data/schema.sql', mode='r') as f:
-            my_db.cursor().executescript(f.read())
-        my_db.commit()
-        my_db.close()
-
-
-def query_db(query, args=(), one=False):
-    cur = get_db().execute(query, args)
-    rv = cur.fetchall()
-    cur.close()
-    return (rv[0] if rv else None) if one else rv
+    conn = sqlite3.connect('data/database.db')
+    c = conn.cursor()
+    with open('data/schema.sql') as schema:
+        c.executescript(schema.read())
+    conn.close()
 
 
 @app.teardown_appcontext
