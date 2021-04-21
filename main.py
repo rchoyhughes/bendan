@@ -75,7 +75,7 @@ def feed_redirect(private_id):
 
 @login_required
 @app.route('/<private_id>/feed/<int:page>', methods=['GET', 'POST'])
-def feed(private_id, page=1):
+def feed(private_id, page):
     if current_user.is_anonymous or private_id != current_user.private_id:
         return current_app.login_manager.unauthorized()
     per_page = 5

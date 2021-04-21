@@ -25,7 +25,7 @@ def time_string(post_timestamp: int) -> str:
         return 'Posted just now'
     elif 60 < diff < (60 * 60):
         if math.floor(diff/60) == 1:
-            return 'Posted 1 minute ago.'
+            return 'Posted 1 minute ago'
         return 'Posted ' + str(math.floor(diff / 60)) + ' minutes ago'
     else:
         diff_mins = round(diff / 60)

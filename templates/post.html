@@ -32,7 +32,7 @@
           <div class="card-body">
             <p class="card-text">{{post[2]}}</p>
             <footer class="text-muted">Upvotes: {{post[4]}}</footer>
-            <footer class="text-muted"><em>{{post[3]}}</em></footer>
+            <footer class="text-muted"><em>{{post[3]}} by <strong>{{post[5]}}</strong></em></footer>
             {% if current_user.username == post[5] %}
             <br>
             <a onclick="delete_post('{{post[0]}}');" class="btn btn-danger" style="color: #fff;">DELETE</a>

@@ -30,6 +30,15 @@
   <div class="container">
       <br>
       <h1 class="display-3" style="font-weight: 400; color: #ff0f0f;"><span>{{current_user.username}}'s </span><span style="color:#000"> feed:</span></h1>
+      <br>
+      {% if posts.items|length > 3 %}
+      {% if posts.has_next %}
+      <button class="btn btn-danger" onclick="window.location.href='/{{current_user.private_id}}/feed/{{posts.next_num}}'" style="float: right">OLDER &gt;&gt;</button>
+      {% endif %}
+      {% if posts.has_prev %}
+      <button class="btn btn-danger mr-1" onclick="window.location.href='/{{current_user.private_id}}/feed/{{posts.prev_num}}'" style="float: right">&lt;&lt; NEWER</button>
+      {% endif %}
+      {% endif %}
       <br><br>
       {% for post in posts.items %}
       <div class ="card" style="box-shadow: 0 0 5px 0 rgba(100, 100, 100, 0.26);">
@@ -38,23 +47,28 @@
           <div class="card-body">
             <p class="card-text">{{post.content}}</p>
             <footer class="text-muted">Upvotes: {{post.upvotes}}</footer>
-            <footer class="text-muted"><em>{{time_string(post.timestamp)}}</em></footer>
+            <footer class="text-muted"><em>{{time_string(post.timestamp)}} by <strong>{{post.username}}</strong></em></footer>
           </div>
         </a>
       </div>
       <br>
       {% endfor %}
 
-      {% if posts.has_prev %}<a href="/{{current_user.private_id}}/feed", page=posts.prev_num)>&lt;&lt; Newer posts</a>{% else %}&lt;&lt; Newer posts{% endif %} |
-      {% if posts.has_next %}<a href="/{{current_user.private_id}}/feed", page=posts.next_num)>Older posts &gt;&gt;</a>{% else %}Older posts &gt;&gt;{% endif %}
+      {% if posts.has_prev %}
+      <button class="btn btn-danger" onclick="window.location.href='/{{current_user.private_id}}/feed/{{posts.prev_num}}'">&lt;&lt; NEWER</button>
+      {% endif %}
+      {% if posts.has_next %}
+      <button class="btn btn-danger" onclick="window.location.href='/{{current_user.private_id}}/feed/{{posts.next_num}}'" style="float: right">OLDER &gt;&gt;</button>
+      {% endif %}
 
-      {% if posts.items.length == 0 %}
+      {% if posts.items|length == 0 %}
       <br><br>
       <h3 class="display-4" style="font-weight: 400;">You haven't posted anything yet.</h3><br><br>
       <h3 class="display-5" >Click the <span style="color: #ff0f0f;">button</span> in the <span style="color: #ff0f0f;">top right corner</span> to create a post.</h3>
       {% endif %}
   </div>
   <!-- /.container -->
+  <br><br><br>
 
 </body>
 </html>
