@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{{url_for('static', filename='scripts/delete_posts.js') }}"></script>
     <link rel="shortcut icon" type="image/png" sizes="32x32" href="{{url_for('static', filename='img/favicon-32x32.png') }}">
     <link rel="shortcut icon" type="image/png" sizes="16x16" href="{{url_for('static', filename='img/favicon-16x16.png') }}">
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"/>
@@ -31,7 +32,11 @@
           <div class="card-body">
             <p class="card-text">{{post[2]}}</p>
             <footer class="text-muted">Upvotes: {{post[4]}}</footer>
-            <footer class="text-muted" style="text-transform: uppercase"><em>{{post[3]}}</em></footer>
+            <footer class="text-muted"><em>{{post[3]}}</em></footer>
+            {% if current_user.username == post[5] %}
+            <br>
+            <a onclick="delete_post('{{post[0]}}');" class="btn btn-danger" style="color: #fff;">DELETE</a>
+            {% endif %}
           </div>
         </a>
       </div>

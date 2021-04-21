@@ -1,11 +1,11 @@
 import flask
 from helper import *
 import sqlite3
-from flask import request
+from flask import request, current_app
 from flask import flash
 from flask import g
 import flask_login
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.automap import automap_base
 
@@ -22,23 +22,14 @@ login_manager.init_app(app)
 Base = automap_base()
 
 
-class User(Base):
+class User(UserMixin, Base):
     __tablename__ = 'users'
-
-    def is_authenticated(self):
-        return self.authenticated
-
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
 
     def get_id(self):
         return self.private_id
 
     def __repr__(self):
-        return '<User %r>' % (self.username)
+        return '<User %r>' % self.username
 
 
 Base.prepare(db.engine, reflect=True)
@@ -63,10 +54,23 @@ def close_connection(exception):
     db.session.close()
 
 
+@login_manager.unauthorized_handler
+def unauthorized():
+    return flask.render_template('unauthorized.html')
+
+
 @app.errorhandler(405)
 @app.errorhandler(404)
 def e404(e):
     return flask.render_template('error.html')
+
+
+@login_required
+@app.route('/post/<post_id>/delete')
+def delete_post(post_id):
+    db.session.query(Posts).filter_by(post_id=post_id).delete()
+    db.session.commit()
+    return flask.redirect('/' + current_user.private_id + '/profile')
 
 
 @app.route('/<private_id>/create-submit', methods=['POST'])
@@ -85,6 +89,8 @@ def create_submit(private_id):
 @login_required
 @app.route('/<private_id>/create', methods=['GET', 'POST'])
 def create(private_id):
+    if current_user.is_anonymous or private_id != current_user.private_id:
+        return current_app.login_manager.unauthorized()
     return flask.render_template('create.html', private_id=private_id)
 
 
@@ -95,6 +101,8 @@ def profile(private_id):
     if q is None:
         flask.abort(404)
     uname = q.username
+    if current_user.is_anonymous or private_id != current_user.private_id:
+        return current_app.login_manager.unauthorized()
 
     # get posts with username
     q = db.session.query(Posts).filter_by(username=uname)
@@ -106,7 +114,7 @@ def profile(private_id):
 
 
 @app.route('/test-profile', methods=['GET', 'POST'])
-def default_create():
+def default_profile():
     return flask.render_template('profile.html')
 
 
@@ -116,7 +124,7 @@ def post_view(post_id):
     q = db.session.query(Posts).filter_by(post_id=post_id).first()
     if q is None:
         flask.abort(404)
-    found = [q.post_id, q.title, q.content, time_string(q.timestamp), q.upvotes]
+    found = [q.post_id, q.title, q.content, time_string(q.timestamp), q.upvotes, q.username]
     return flask.render_template('post.html', post=found)
 
 
@@ -126,7 +134,7 @@ def default_post():
 
 
 @app.route('/test-create', methods=['GET', 'POST'])
-def default_profile():
+def default_create():
     return flask.render_template('create.html')
 
 

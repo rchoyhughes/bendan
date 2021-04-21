@@ -7,6 +7,7 @@
     <link rel="shortcut icon" type="image/png" sizes="32x32" href="{{url_for('static', filename='img/favicon-32x32.png') }}">
     <link rel="shortcut icon" type="image/png" sizes="16x16" href="{{url_for('static', filename='img/favicon-16x16.png') }}">
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"/>
+    <script src="{{url_for('static', filename='scripts/delete_posts.js') }}"></script>
     <title>BENDAN - Profile Page</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap');
@@ -37,7 +38,9 @@
           <div class="card-body">
             <p class="card-text">{{post[2]}}</p>
             <footer class="text-muted">Upvotes: {{post[4]}}</footer>
-            <footer class="text-muted" style="text-transform: uppercase"><em>{{post[3]}}</em></footer>
+            <footer class="text-muted"><em>{{post[3]}}</em></footer>
+            <br>
+            <a onclick="delete_post('{{post[0]}}');" class="btn btn-danger" style="z-index: 2; position: relative; color: #fff;">DELETE</a>
           </div>
         </a>
       </div>
@@ -50,5 +53,6 @@
       {% endif %}
   </div>
   <!-- /.container -->
+
 </body>
 </html>
