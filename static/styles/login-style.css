@@ -117,3 +117,8 @@ body {
 .log-form .profile:hover {
   color: #b80000;
 }
+
+hr.rounded {
+  border-top: 4px solid #bbb;
+  border-radius: 5px;
+}

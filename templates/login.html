@@ -7,6 +7,7 @@
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"/>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="{{url_for('static', filename='scripts/upload_profile.js') }}"></script>
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap');
     </style>
@@ -34,10 +35,20 @@
 
 <div class="log-form">
   <h2>Log in to Bendan</h2>
-  <form action="login-submit" method="post">
+  <form id="login-submit" action="login-submit" method="post">
     <input type="text" title="username" id="username" name="username" placeholder="username" required>
     <input type="password" title="password" id="password" name="password" placeholder="password" required>
     <button type="submit" class="btn">Login / Register</button>
-    <a class="profile" href="#">add a profile pic</a>
+    <p class="profile" onclick="showProfilePic();">add a profile pic</p>
+
+    <div style="display: none;" id="profile-pic-div">
+      <br><br><hr class="rounded"><br>
+      <input type="file" id="myPic" name="myPic">
+      <button type="submit" class="btn">Register with Profile Picture</button>
+    </div>
   </form>
-</div><!--end log form -->
+</div>
+
+<!--end log form -->
+
+
