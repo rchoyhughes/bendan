@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/png" sizes="32x32" href="{{url_for('static', filename='img/favicon-32x32.png') }}">
+    <link rel="shortcut icon" type="image/png" sizes="16x16" href="{{url_for('static', filename='img/favicon-16x16.png') }}">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"/>
+    <script src="{{url_for('static', filename='scripts/delete_posts.js') }}"></script>
+    <title>BENDAN - Feed</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap');
+    </style>
+</head>
+<body style="font-family: 'Roboto Condensed', sans-serif">
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="/{{current_user.private_id}}/feed">
+            <img src="{{ url_for('static', filename='img/bendan_transparentbg.svg') }}" alt="" width="180">
+      </a>
+      <form class="form-inline"></form>
+      <button class="btn btn-danger navbar-btn" onclick="window.location.href='/{{current_user.private_id}}/profile'">{{current_user.username}}</button>
+    </form>
+    </div>
+  </nav>
+  
+  <!-- Page Content -->
+  <div class="container">
+      <br>
+      <h1 class="display-3" style="font-weight: 400; color: #ff0f0f;"><span>{{current_user.username}}'s </span><span style="color:#000"> feed:</span></h1>
+      <br><br>
+      {% for post in posts.items %}
+      <div class ="card" style="box-shadow: 0 0 5px 0 rgba(100, 100, 100, 0.26);">
+        <a class="card-block stretched-link text-decoration-none" href="/post/{{post.post_id}}"></a>
+          <h5 class="card-header font-weight-bold">{{post.title}}</h5>
+          <div class="card-body">
+            <p class="card-text">{{post.content}}</p>
+            <footer class="text-muted">Upvotes: {{post.upvotes}}</footer>
+            <footer class="text-muted"><em>{{time_string(post.timestamp)}}</em></footer>
+          </div>
+        </a>
+      </div>
+      <br>
+      {% endfor %}
+
+      {% if posts.has_prev %}<a href="/{{current_user.private_id}}/feed", page=posts.prev_num)>&lt;&lt; Newer posts</a>{% else %}&lt;&lt; Newer posts{% endif %} |
+      {% if posts.has_next %}<a href="/{{current_user.private_id}}/feed", page=posts.next_num)>Older posts &gt;&gt;</a>{% else %}Older posts &gt;&gt;{% endif %}
+
+      {% if posts.items.length == 0 %}
+      <br><br>
+      <h3 class="display-4" style="font-weight: 400;">You haven't posted anything yet.</h3><br><br>
+      <h3 class="display-5" >Click the <span style="color: #ff0f0f;">button</span> in the <span style="color: #ff0f0f;">top right corner</span> to create a post.</h3>
+      {% endif %}
+  </div>
+  <!-- /.container -->
+
+</body>
+</html>
