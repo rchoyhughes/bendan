@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/png" sizes="32x32" href="{{url_for('static', filename='img/favicon-32x32.png') }}">
+    <link rel="shortcut icon" type="image/png" sizes="16x16" href="{{url_for('static', filename='img/favicon-16x16.png') }}">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"/>
+    <title>BENDAN - Unable to Access Page</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap');
+    </style>
+</head>
+<body style="font-family: 'Roboto Condensed', sans-serif">
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="/login">
+            <img src="{{ url_for('static', filename='img/bendan_transparentbg.svg') }}" alt="" width="180">
+      </a>
+    </form>
+    </div>
+  </nav>
+  
+  <!-- Page Content -->
+  <div class="container">
+      <br>
+      <h1 class="display-3" style="font-weight: 400">Hmmm... it looks like you're unable to access the page you just tried going to.</h1><br>
+      <h3 class="display-5">Please go back and try navigating to where you were going again.</h3>
+  </div>
+  <!-- /.container -->
+</body>
+</html>
