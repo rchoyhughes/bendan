@@ -40,7 +40,7 @@ def time_string(post_timestamp: int) -> str:
             return 'Posted ' + str(diff_hours) + ' hours and 30 minutes ago'
         else:
             if diff_hours == 1:
-                return 'Posted 1 hour ago.'
+                return 'Posted 1 hour ago'
             return 'Posted ' + str(diff_hours) + ' hours ago'
 
 

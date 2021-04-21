@@ -79,7 +79,7 @@ def feed(private_id, page):
     if current_user.is_anonymous or private_id != current_user.private_id:
         return current_app.login_manager.unauthorized()
     per_page = 5
-    posts = db.session.query(Posts).order_by(Posts.timestamp.desc()).paginate(page, per_page, error_out=False)
+    posts = db.session.query(Posts).filter(Posts.username != current_user.username).order_by(Posts.timestamp.desc()).paginate(page, per_page, error_out=False)
     return flask.render_template('feed.html', posts=posts, time_string=time_string)
 
 
