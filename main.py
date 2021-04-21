@@ -66,6 +66,24 @@ def e404(e):
 
 
 @login_required
+@app.route('/<private_id>/feed', methods=['GET', 'POST'])
+def feed_redirect(private_id):
+    if current_user.is_anonymous or private_id != current_user.private_id:
+        return current_app.login_manager.unauthorized()
+    return flask.redirect('/' + private_id + '/feed/1')
+
+
+@login_required
+@app.route('/<private_id>/feed/<int:page>', methods=['GET', 'POST'])
+def feed(private_id, page=1):
+    if current_user.is_anonymous or private_id != current_user.private_id:
+        return current_app.login_manager.unauthorized()
+    per_page = 5
+    posts = db.session.query(Posts).order_by(Posts.timestamp.desc()).paginate(page, per_page, error_out=False)
+    return flask.render_template('feed.html', posts=posts, time_string=time_string)
+
+
+@login_required
 @app.route('/post/<post_id>/delete')
 def delete_post(post_id):
     db.session.query(Posts).filter_by(post_id=post_id).delete()
@@ -153,14 +171,14 @@ def login_submit():
         user.authenticated = True
         login_user(user)
         db.session.commit()
-        return flask.redirect('/' + private_id + '/profile')
+        return flask.redirect('/' + private_id + '/feed')
     else:
         user = User(username=username, private_id=private_id, authenticated=True)
         db.session.add(user)
         db.session.commit()
         # flash('Thank you for registering, ' + data['username'] + '.', 'success')
         login_user(user)
-        return flask.redirect('/' + private_id + '/profile')
+        return flask.redirect('/' + private_id + '/feed')
 
 
 @app.route('/', methods=['GET', 'POST'])
