@@ -49,7 +49,7 @@
           <div class="card-body">
             <p class="card-text">{{post.content}}</p>
             <button class="upvote" id="upvote-btn" data-postid="{{post.post_id}}" style="z-index: 2; position: relative;">Upvote</button>
-            <footer class="text-muted">Upvotes: {{post.upvotes}}</footer>
+            <footer class="text-muted" id="{{post.post_id}}">Upvotes: {{post.upvotes}}</footer>
             <footer class="text-muted"><em>{{time_string(post.timestamp)}} by <strong>{{post.username}}</strong></em></footer>
           </div>
         </a>

@@ -64,20 +64,41 @@ def unauthorized():
 def e404(e):
     return flask.render_template('error.html')
 
-
-@app.route('/<post_id>/upvote', methods=['POST'])
-def upvote_post(post_id):
+@login_required
+@app.route('/upvote', methods=['POST'])
+def upvote_post():
     if request.method == "POST":
-
-        post = db.session.query(Posts).filter_by(post_id=post_id).first()
-
+        dataGet = json.loads(request.data)
+        print('Vote invoked')
+        print(dataGet['postid'])
+        post = db.session.query(Posts).filter_by(post_id=dataGet['postid']).first()
+        print(post.upvoters)
+        print(current_user.username)
+        #current_user.username
         if post:
-            setattr(post, "upvote_count", post.upvote_count + 1)
-            db.session.commit()
-
-            return json.dumps({'status': 'success'})
-        return json.dumps({'status': 'no post found'})
-    return flask.redirect(url_for('index'))
+            allVoters = str(post.upvoters).split(',')
+            print(allVoters)
+            if current_user.username in allVoters:
+                print('Post upvote failed, already upvoted')
+                return json.dumps({'status' : 'already upvoted'})
+            else:
+                if allVoters == ['']:
+                    setattr(post, "upvoters", current_user.username)
+                else:
+                    allVoters.append(current_user.username)
+                    allVoters = ','.join(allVoters)
+                    print('updated voters')
+                    print(allVoters)
+                    setattr(post, "upvoters", allVoters)
+                setattr(post, "upvotes", post.upvotes + 1)
+                db.session.commit()
+                print('Post upvote success')
+                return json.dumps({'status' : 'success', 'upvotes': post.upvotes})
+        return json.dumps({'status' : 'no post found'})
+    return 'Not POST'
+            #return json.dumps({'status': 'success'})
+        #return json.dumps({'status': 'no post found'})
+    #return flask.redirect(url_for('index'))
 
 
 @login_required

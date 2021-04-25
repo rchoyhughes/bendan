@@ -1,19 +1,27 @@
-//https://www.reddit.com/r/flask/comments/chm0qu/have_upvotedownvotes_buttons_that_dont_reload_the/
 
-$(document).on('click', '#upvote-btn', function(event) {
-    var $myurl=$('#upvote-btn').data('postid') + '/upvote';
-    $.ajax({
-    	url : $myurl,
-    	type : "post",
-    	contentType: 'application/json;charset=UTF-8',
-    	dataType: "json",
-    	data : JSON.stringify({'postid' : $('#upvote-btn').data('postid')}),
-    	success : function(response) {
-    		console.log(response);	
-    	},
-    	error : function(xhr) {
-    		console.log(xhr);
-    	}
-    });
-    event.preventDefault();
+
+$(document).ready(function(){
+	$('.upvote').click(function() {
+		console.log('Ajax called');
+		console.log($(this).data('postid'));
+		const postID = $(this).data('postid');
+		$.ajax({
+			url : '/upvote',
+			type : 'POST',
+			contentType: 'application/json;charset=UTF-8',
+			dataType: "json",
+			data : JSON.stringify({'postid' : $(this).data('postid')}),
+			success : function(response) {
+				console.log(response);
+				if (response.status === 'success'){
+					console.log("Got that update!!!!!!!!!!");
+					document.getElementById(postID).innerHTML ='Upvotes: ' + response.upvotes.toString();
+				}
+
+			},
+			error : function(xhr) {
+				console.log(xhr);
+			}
+		});
+	});
 });
