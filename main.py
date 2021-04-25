@@ -8,7 +8,6 @@ import flask_login
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.automap import automap_base
-import pandas as pd
 
 app = flask.Flask(__name__)
 app.secret_key = 'some secret key'
