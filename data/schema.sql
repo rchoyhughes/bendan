@@ -13,5 +13,6 @@ CREATE TABLE IF NOT EXISTS posts (
     username text,
     timestamp int,
     upvotes int,
+    upvoters text,
     FOREIGN KEY(username) REFERENCES users(username)
 );
