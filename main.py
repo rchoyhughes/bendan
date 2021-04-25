@@ -214,23 +214,6 @@ def test_alchemy():
         print(r.content)
     return flask.redirect('/')
 
-@app.route('/tgupvote', methods=['GET', 'POST'])
-def toggleUpvote():
-    dataFrame = pd.DataFrame({'Upvoters' : []})
-    username #???????
-    #if user already upvoted
-    dataFrame = pd.read_sql('SELECT Upvoters FROM Posts where post_id = ?', con=conn)
-    dataFrame.Data = dataFrame.Data.apply(lambda x: json.loads(x))
-
-    if username in dataFrame.Upvoters:
-        #take him off?
-        #sub 1 from upvoters
-    else:
-        #if user has not upvoted
-        dataFrame = dataFrame.append({'Upvoters': username}, ignore_index=True)
-        dataFrame.Data = dataFrame.Data.apply(lambda x: json.dumps(x))
-        dataFrame.to_sql(name='Posts', con=conn, if_exists='replace')
-        #add 1 to upvoters
 
 if __name__ == '__main__':
     init_db()
