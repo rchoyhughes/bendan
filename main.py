@@ -69,9 +69,10 @@ def e404(e):
 def upvote_post():
     if request.method == "POST":
         dataGet = json.loads(request.data)
-        print('Vote invoked')
+        print('Upvote invoked')
         print(dataGet['postid'])
         post = db.session.query(Posts).filter_by(post_id=dataGet['postid']).first()
+        print("Upvoters")
         print(post.upvoters)
         print(current_user.username)
         #current_user.username
@@ -96,9 +97,41 @@ def upvote_post():
                 return json.dumps({'status' : 'success', 'upvotes': post.upvotes})
         return json.dumps({'status' : 'no post found'})
     return 'Not POST'
-            #return json.dumps({'status': 'success'})
-        #return json.dumps({'status': 'no post found'})
-    #return flask.redirect(url_for('index'))
+
+@login_required
+@app.route('/downvote', methods=['POST'])
+def downvote_post():
+    if request.method == "POST":
+        dataGet = json.loads(request.data)
+        print('Downvote invoked')
+        print(dataGet['postid'])
+        post = db.session.query(Posts).filter_by(post_id=dataGet['postid']).first()
+        print("Downvoters")
+        print(post.downvoters)
+        print(current_user.username)
+        #current_user.username
+        if post:
+            allVoters = str(post.downvoters).split(',')
+            print(allVoters)
+            if current_user.username in allVoters:
+                print('Post downvote failed, already downvoted')
+                return json.dumps({'status' : 'already downvoted'})
+            else:
+                if allVoters == ['']:
+                    setattr(post, "downvoters", current_user.username)
+                else:
+                    allVoters.append(current_user.username)
+                    allVoters = ','.join(allVoters)
+                    print('updated voters')
+                    print(allVoters)
+                    setattr(post, "downvoters", allVoters)
+                setattr(post, "upvotes", post.upvotes - 1)
+                db.session.commit()
+                print('Post upvote success')
+                return json.dumps({'status' : 'success', 'upvotes': post.upvotes})
+        return json.dumps({'status' : 'no post found'})
+    return 'Not POST'
+
 
 
 @login_required
