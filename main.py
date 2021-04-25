@@ -1,7 +1,7 @@
 import flask
 from helper import *
 import sqlite3
-from flask import request, current_app
+from flask import request, current_app, json, url_for
 from flask import flash
 from flask import g
 import flask_login
@@ -63,6 +63,21 @@ def unauthorized():
 @app.errorhandler(404)
 def e404(e):
     return flask.render_template('error.html')
+
+
+@app.route('/<post_id>/upvote', methods=['POST'])
+def upvote_post(post_id):
+    if request.method == "POST":
+
+        post = db.session.query(Posts).filter_by(post_id=post_id).first()
+
+        if post:
+            setattr(post, "upvote_count", post.upvote_count + 1)
+            db.session.commit()
+
+            return json.dumps({'status': 'success'})
+        return json.dumps({'status': 'no post found'})
+    return flask.redirect(url_for('index'))
 
 
 @login_required

@@ -7,7 +7,9 @@
     <link rel="shortcut icon" type="image/png" sizes="32x32" href="{{url_for('static', filename='img/favicon-32x32.png') }}">
     <link rel="shortcut icon" type="image/png" sizes="16x16" href="{{url_for('static', filename='img/favicon-16x16.png') }}">
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>
     <script src="{{url_for('static', filename='scripts/delete_posts.js') }}"></script>
+    <script src="{{url_for('static', filename='scripts/voting.js') }}"></script>
     <title>BENDAN - Feed</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap');
@@ -46,6 +48,7 @@
           <h5 class="card-header font-weight-bold">{{post.title}}</h5>
           <div class="card-body">
             <p class="card-text">{{post.content}}</p>
+            <button class="upvote" id="upvote-btn" data-postid="{{post.post_id}}" style="z-index: 2; position: relative;">Upvote</button>
             <footer class="text-muted">Upvotes: {{post.upvotes}}</footer>
             <footer class="text-muted"><em>{{time_string(post.timestamp)}} by <strong>{{post.username}}</strong></em></footer>
           </div>
