@@ -1,7 +1,9 @@
 import flask
+import io
+import sys
 from helper import *
 import sqlite3
-from flask import request, current_app, json, url_for
+from flask import request, current_app, json, url_for, send_file
 from flask import flash
 from flask import g
 import flask_login
@@ -63,6 +65,51 @@ def unauthorized():
 @app.errorhandler(404)
 def e404(e):
     return flask.render_template('error.html')
+
+@app.route('/getTSVdump', methods=['POST','GET'])
+def get_tsv():
+    return flask.render_template('downtsv.html')
+
+@app.route('/getTSVfile/<tbtype>', methods=['GET'])
+def get_branch_data_file(tbtype):
+
+    #connection = engine.connect()
+    data_for_csv = []
+    #data = db.session.query(str(tbtype)).all()
+    if tbtype == 'posts':
+        data = db.session.query(Posts).all()
+        file_basename = 'posts.tsv'
+        server_path = ''
+        w_file = open(server_path+file_basename,'w')
+        w_file.write('post_id\ttitle\tcontent\tusername\ttimestamp\tupvotes\tupvoters\tdownvoters\n')
+        for row in data:
+            row_as_string = row.post_id+'\t'+row.title+'\t'+row.content+'\t'+row.username+'\t'+str(row.timestamp)+'\t'
+            row_as_string += str(row.upvotes)+'\t'+row.upvoters+'\t'+row.downvoters+'\n'
+            print(row_as_string)
+            w_file.write(row_as_string)
+    elif tbtype == 'users':
+        data = db.session.query(User).all()
+        file_basename = 'users.tsv'
+        server_path = ''
+        w_file = open(server_path+file_basename,'w')
+        w_file.write('username\tprivate_id\tauthenticated\n')
+        for row in data:
+            row_as_string = row.username+'\t'+row.private_id+'\t'+str(row.authenticated)+'\n'
+            print(row_as_string)
+            w_file.write(row_as_string)
+
+    w_file.close()
+    w_file = open(server_path+file_basename,'r')
+    file_size = len(w_file.read())
+    return send_file(server_path+file_basename,as_attachment=True)
+#     response = make_response(w_file,200)
+#     response.headers['Content-Description'] = 'File Transfer'
+#     response.headers['Cache-Control'] = 'no-cache'
+#     response.headers['Content-Type'] = 'text/tsv'
+#     response.headers['Content-Disposition'] = 'attachment; filename=%s' % file_basename
+#     response.headers['Content-Length'] = file_size
+#     return response
+
 
 @login_required
 @app.route('/upvote', methods=['POST'])

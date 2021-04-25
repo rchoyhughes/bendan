@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/png" sizes="32x32" href="{{url_for('static', filename='img/favicon-32x32.png') }}">
+    <link rel="shortcut icon" type="image/png" sizes="16x16" href="{{url_for('static', filename='img/favicon-16x16.png') }}">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"/>
+
+    <title>BENDAN - TSV Download</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap');
+    </style>
+</head>
+<body style="font-family: 'Roboto Condensed', sans-serif">
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="/{{current_user.private_id}}/feed">
+            <img src="{{ url_for('static', filename='img/bendan_transparentbg.svg') }}" alt="" width="180">
+        </a>
+        </form>
+    </div>
+</nav>
+
+<!-- Page Content -->
+<div class="container">
+    <br>
+    <button class="dposts" id="dp-btn" onclick="window.location.href='/getTSVfile/posts'" style="z-index: 2; position: relative;">Download Posts</button>
+    <button class="dusers" id="du-btn" onclick="window.location.href='/getTSVfile/users'" style="z-index: 2; position: relative;">Download Users</button>
+    <br>
+</div>
+<!-- /.container -->
+</body>
+</html>
