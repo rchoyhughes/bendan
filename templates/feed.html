@@ -48,9 +48,16 @@
           <h5 class="card-header font-weight-bold">{{post.title}}</h5>
           <div class="card-body">
             <p class="card-text">{{post.content}}</p>
-            <button class="upvote" id="upvote-btn" data-postid="{{post.post_id}}" style="z-index: 2; position: relative;">Upvote</button>
-            <button class="downvote" id="downvote-btn" data-postid="{{post.post_id}}" style="z-index: 2; position: relative;">Downvote</button>
-            <footer class="text-muted" id="{{post.post_id}}">Upvotes: {{post.upvotes}}</footer>
+            <!--<button class="upvote btn btn-outline-danger btn-sm" id="upvote-btn" data-postid="{{post.post_id}}" style="z-index: 2; position: relative; float: left;">^</button>-->
+            <button class="upvote" id="upvote-btn" data-postid="{{post.post_id}}" style="z-index: 2; position: relative; float: left; border: 0; background: transparent;">
+              <img src="{{url_for('static', filename='img/upvote.png') }}" width="20" height="20" alt="upvote">
+            </button>
+            <p class="h5" id={{post.post_id}} style="float: left">&nbsp;<strong>{{post.upvotes}}</strong>&nbsp;</p>
+            <!--<button class="downvote btn btn-outline-danger btn-sm" id="downvote-btn" data-postid="{{post.post_id}}" style="z-index: 2; position: relative; float: left;">v</button>-->
+            <button class="downvote" id="downvote-btn" data-postid="{{post.post_id}}" style="z-index: 2; position: relative; float: left; border: 0; background: transparent">
+              <img src="{{url_for('static', filename='img/downvote.png') }}" width="20" height="20" alt="downvote">
+            </button>
+            <br><br>
             <footer class="text-muted"><em>{{time_string(post.timestamp)}} by <strong>{{post.username}}</strong></em></footer>
           </div>
         </a>

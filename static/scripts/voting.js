@@ -15,7 +15,7 @@ $(document).ready(function(){
 				console.log(response);
 				if (response.status === 'success'){
 					console.log("Got that update!!!!!!!!!!");
-					document.getElementById(postID).innerHTML ='Upvotes: ' + response.upvotes.toString();
+					document.getElementById(postID).innerHTML ='&nbsp;<strong>' + response.upvotes.toString() + '</strong>&nbsp;';
 				}
 
 			},
@@ -39,7 +39,7 @@ $(document).ready(function(){
 				console.log(response);
 				if (response.status === 'success'){
 					console.log("Got that update!!!!!!!!!!");
-					document.getElementById(postID).innerHTML ='Upvotes: ' + response.upvotes.toString();
+					document.getElementById(postID).innerHTML ='&nbsp;<strong>' + response.upvotes.toString() + '</strong>&nbsp;';
 				}
 
 			},
