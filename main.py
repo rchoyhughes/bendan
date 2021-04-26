@@ -260,7 +260,7 @@ def feed(private_id, page):
 
 
 @login_required
-@app.route('/post/<post_id>/delete')
+@app.route('/post/<post_id>/delete', methods=['POST'])
 def delete_post(post_id):
     db.session.query(Posts).filter_by(post_id=post_id).delete()
     db.session.commit()
