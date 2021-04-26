@@ -130,9 +130,26 @@ def upvote_post():
         if post:
             allVoters = str(post.upvoters).split(',')
             print(allVoters)
-            if current_user.username in allVoters:
-                print('Post upvote failed, already upvoted')
-                return json.dumps({'status': 'already upvoted'})
+            downvoters = str(post.downvoters).split(',')
+            if current_user.username in downvoters:
+                print('Change downvote to upvote')
+                allVoters.append(current_user.username)
+                downvoters.remove(current_user.username)
+                allVoters = ','.join(allVoters)
+                downvoters = ','.join(downvoters)
+                setattr(post, "downvoters", downvoters)
+                setattr(post, "upvoters", allVoters)
+                setattr(post, "upvotes", post.upvotes + 2)
+                db.session.commit()
+                return json.dumps({'status': 'success', 'upvotes': post.upvotes})
+            elif current_user.username in allVoters:
+                print('Remove upvote')
+                allVoters.remove(current_user.username)
+                allVoters = ','.join(allVoters)
+                setattr(post, "upvoters", allVoters)
+                setattr(post, "upvotes", post.upvotes - 1)
+                db.session.commit()
+                return json.dumps({'status': 'success', 'upvotes': post.upvotes})
             else:
                 if allVoters == ['']:
                     setattr(post, "upvoters", current_user.username)
@@ -165,9 +182,26 @@ def downvote_post():
         if post:
             allVoters = str(post.downvoters).split(',')
             print(allVoters)
-            if current_user.username in allVoters:
-                print('Post downvote failed, already downvoted')
-                return json.dumps({'status': 'already downvoted'})
+            upvoters = str(post.upvoters).split(',')
+            if current_user.username in upvoters:
+                print('Change upvote to downvote')
+                allVoters.append(current_user.username)
+                upvoters.remove(current_user.username)
+                allVoters = ','.join(allVoters)
+                upvoters = ','.join(upvoters)
+                setattr(post, "upvoters", upvoters)
+                setattr(post, "downvoters", allVoters)
+                setattr(post, "upvotes", post.upvotes - 2)
+                db.session.commit()
+                return json.dumps({'status': 'success', 'upvotes': post.upvotes})
+            elif current_user.username in allVoters:
+                print('Remove downvote')
+                allVoters.remove(current_user.username)
+                allVoters = ','.join(allVoters)
+                setattr(post, "downvoters", allVoters)
+                setattr(post, "upvotes", post.upvotes + 1)
+                db.session.commit()
+                return json.dumps({'status': 'success', 'upvotes': post.upvotes})
             else:
                 if allVoters == ['']:
                     setattr(post, "downvoters", current_user.username)
@@ -179,7 +213,7 @@ def downvote_post():
                     setattr(post, "downvoters", allVoters)
                 setattr(post, "upvotes", post.upvotes - 1)
                 db.session.commit()
-                print('Post upvote success')
+                print('Post downvote success')
                 return json.dumps({'status': 'success', 'upvotes': post.upvotes})
         return json.dumps({'status': 'no post found'})
     return 'Not POST'
@@ -267,7 +301,10 @@ def login_submit():
     data = request.form
     username = data['username'].lower()
     if ',' in username:
-        flash('You cannot have the character \',\' in your username. Please choose a different one.', 'danger')
+        flash('You cannot have the character \' , \' in your username. Please choose a different one.', 'danger')
+        return flask.redirect('/register')
+    elif ' ' in username:
+        flash('You cannot have a space in your username. Please choose a different one.', 'danger')
         return flask.redirect('/register')
     user = db.session.query(User).filter_by(username=username).first()
     private_id = hash_string(username + data['password'])
