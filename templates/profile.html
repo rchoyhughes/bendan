@@ -29,6 +29,10 @@
   <!-- Page Content -->
   <div class="container">
       <br>
+      {% if current_user.hasProfilePic %}
+      <img src="{{url_for('static', filename='img/profile_pics/' + current_user.profilePicName) }}" alt="Profile Picture" class="rounded-circle" width="200">
+      <br><br>
+      {% endif %}
       <h1 class="display-3" style="font-weight: 400"><span>Hello,</span><span style="color: #ff0f0f;"> {{username}}.</span></h1>
       <br><br>
       {% for post in data %}

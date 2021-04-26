@@ -1,12 +1,8 @@
 import flask
-import io
-import sys
+import os
 from helper import *
 import sqlite3
-from flask import request, current_app, json, url_for, send_file
-from flask import flash
-from flask import g
-import flask_login
+from flask import request, current_app, json, url_for, send_file, flash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.automap import automap_base
@@ -16,6 +12,8 @@ app.secret_key = 'some secret key'
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = -1
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data/database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['UPLOAD_FOLDER'] = './static/img/profile_pics'
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
 DATABASE = 'data/database.db'
 db = SQLAlchemy(app)
 login_manager = LoginManager()
@@ -337,7 +335,15 @@ def login_submit():
         db.session.commit()
         return flask.redirect('/' + private_id + '/feed')
     else:
-        user = User(username=username, private_id=private_id, authenticated=True)
+        if request.files['myPic'].filename == '':
+            user = User(username=username, private_id=private_id, authenticated=True, hasProfilePic=False)
+        else:
+            profile_pic = request.files['myPic']
+            file_extension = profile_pic.filename.split('.')[-1]
+            filename = private_id + '.' + file_extension
+            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            profile_pic.save(path)
+            user = User(username=username, private_id=private_id, authenticated=True, hasProfilePic=True, profilePicName=filename)
         db.session.add(user)
         db.session.commit()
         # flash('Thank you for registering, ' + data['username'] + '.', 'success')

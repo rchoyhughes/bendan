@@ -2,8 +2,10 @@ pragma foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS users (
     username text primary key,
-    private_id text
-    authenticated boolean
+    private_id text,
+    authenticated boolean,
+    hasProfilePic boolean,
+    profilePicName text
 );
 
 CREATE TABLE IF NOT EXISTS posts (

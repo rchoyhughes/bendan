@@ -23,7 +23,10 @@
           <img src="{{ url_for('static', filename='img/bendan_transparentbg.svg') }}" alt="" width="180">
     </a>
     <form class="form-inline"></form>
-    <button class="btn btn-danger navbar-btn" onclick="window.location.href='/{{current_user.private_id}}/profile'">{{current_user.username}}</button>
+    {% if current_user.hasProfilePic %}
+      <img src="{{url_for('static', filename='img/profile_pics/' + current_user.profilePicName) }}" width="40" height="40" class="rounded-circle ml-auto alt=" onclick="window.location.href='/{{current_user.private_id}}/profile'">
+    {% endif %}
+    <button class="btn btn-danger navbar-btn ml-2" onclick="window.location.href='/{{current_user.private_id}}/profile'">{{current_user.username}}</button>
   </form>
   </div>
 </nav>
