@@ -66,42 +66,46 @@ def unauthorized():
 def e404(e):
     return flask.render_template('error.html')
 
-@app.route('/getTSVdump', methods=['POST','GET'])
+
+@app.route('/getTSVdump', methods=['POST', 'GET'])
 def get_tsv():
     return flask.render_template('downtsv.html')
 
+
 @app.route('/getTSVfile/<tbtype>', methods=['GET'])
 def get_branch_data_file(tbtype):
-
-    #connection = engine.connect()
+    # connection = engine.connect()
     data_for_csv = []
-    #data = db.session.query(str(tbtype)).all()
+    # data = db.session.query(str(tbtype)).all()
     if tbtype == 'posts':
         data = db.session.query(Posts).all()
         file_basename = 'posts.tsv'
         server_path = ''
-        w_file = open(server_path+file_basename,'w')
+        w_file = open(server_path + file_basename, 'w')
         w_file.write('post_id\ttitle\tcontent\tusername\ttimestamp\tupvotes\tupvoters\tdownvoters\n')
         for row in data:
-            row_as_string = row.post_id+'\t'+row.title+'\t'+row.content+'\t'+row.username+'\t'+str(row.timestamp)+'\t'
-            row_as_string += str(row.upvotes)+'\t'+row.upvoters+'\t'+row.downvoters+'\n'
+            row_as_string = row.post_id + '\t' + row.title + '\t' + row.content + '\t' + row.username + '\t' + str(
+                row.timestamp) + '\t'
+            row_as_string += str(row.upvotes) + '\t' + row.upvoters + '\t' + row.downvoters + '\n'
             print(row_as_string)
             w_file.write(row_as_string)
     elif tbtype == 'users':
         data = db.session.query(User).all()
         file_basename = 'users.tsv'
         server_path = ''
-        w_file = open(server_path+file_basename,'w')
+        w_file = open(server_path + file_basename, 'w')
         w_file.write('username\tprivate_id\tauthenticated\n')
         for row in data:
-            row_as_string = row.username+'\t'+row.private_id+'\t'+str(row.authenticated)+'\n'
+            row_as_string = row.username + '\t' + row.private_id + '\t' + str(row.authenticated) + '\n'
             print(row_as_string)
             w_file.write(row_as_string)
 
     w_file.close()
-    w_file = open(server_path+file_basename,'r')
+    w_file = open(server_path + file_basename, 'r')
     file_size = len(w_file.read())
-    return send_file(server_path+file_basename,as_attachment=True)
+    return send_file(server_path + file_basename, as_attachment=True)
+
+
 #     response = make_response(w_file,200)
 #     response.headers['Content-Description'] = 'File Transfer'
 #     response.headers['Cache-Control'] = 'no-cache'
@@ -122,13 +126,13 @@ def upvote_post():
         print("Upvoters")
         print(post.upvoters)
         print(current_user.username)
-        #current_user.username
+        # current_user.username
         if post:
             allVoters = str(post.upvoters).split(',')
             print(allVoters)
             if current_user.username in allVoters:
                 print('Post upvote failed, already upvoted')
-                return json.dumps({'status' : 'already upvoted'})
+                return json.dumps({'status': 'already upvoted'})
             else:
                 if allVoters == ['']:
                     setattr(post, "upvoters", current_user.username)
@@ -141,9 +145,10 @@ def upvote_post():
                 setattr(post, "upvotes", post.upvotes + 1)
                 db.session.commit()
                 print('Post upvote success')
-                return json.dumps({'status' : 'success', 'upvotes': post.upvotes})
-        return json.dumps({'status' : 'no post found'})
+                return json.dumps({'status': 'success', 'upvotes': post.upvotes})
+        return json.dumps({'status': 'no post found'})
     return 'Not POST'
+
 
 @login_required
 @app.route('/downvote', methods=['POST'])
@@ -156,13 +161,13 @@ def downvote_post():
         print("Downvoters")
         print(post.downvoters)
         print(current_user.username)
-        #current_user.username
+        # current_user.username
         if post:
             allVoters = str(post.downvoters).split(',')
             print(allVoters)
             if current_user.username in allVoters:
                 print('Post downvote failed, already downvoted')
-                return json.dumps({'status' : 'already downvoted'})
+                return json.dumps({'status': 'already downvoted'})
             else:
                 if allVoters == ['']:
                     setattr(post, "downvoters", current_user.username)
@@ -175,10 +180,9 @@ def downvote_post():
                 setattr(post, "upvotes", post.upvotes - 1)
                 db.session.commit()
                 print('Post upvote success')
-                return json.dumps({'status' : 'success', 'upvotes': post.upvotes})
-        return json.dumps({'status' : 'no post found'})
+                return json.dumps({'status': 'success', 'upvotes': post.upvotes})
+        return json.dumps({'status': 'no post found'})
     return 'Not POST'
-
 
 
 @login_required
@@ -195,7 +199,8 @@ def feed(private_id, page):
     if current_user.is_anonymous or private_id != current_user.private_id:
         return current_app.login_manager.unauthorized()
     per_page = 5
-    posts = db.session.query(Posts).filter(Posts.username != current_user.username).order_by(Posts.timestamp.desc()).paginate(page, per_page, error_out=False)
+    posts = db.session.query(Posts).filter(Posts.username != current_user.username).order_by(
+        Posts.timestamp.desc()).paginate(page, per_page, error_out=False)
     return flask.render_template('feed.html', posts=posts, time_string=time_string)
 
 
@@ -215,7 +220,7 @@ def create_submit(private_id):
     post_id = hash_string(username + str(timestamp))
     db.session.add(
         Posts(post_id=post_id, title=data['title'], content=data['content'], username=username, timestamp=timestamp,
-              upvotes=0))
+              upvotes=0, upvoters='', downvoters=''))
     db.session.commit()
     return flask.redirect('/' + private_id + '/profile')
 
@@ -247,11 +252,6 @@ def profile(private_id):
     return flask.render_template('profile.html', username=uname, data=post_list)
 
 
-@app.route('/test-profile', methods=['GET', 'POST'])
-def default_profile():
-    return flask.render_template('profile.html')
-
-
 @login_required
 @app.route('/post/<post_id>', methods=['GET', 'POST'])
 def post_view(post_id):
@@ -262,20 +262,13 @@ def post_view(post_id):
     return flask.render_template('post.html', post=found)
 
 
-@app.route('/test-post', methods=['GET', 'POST'])
-def default_post():
-    return flask.render_template('post.html')
-
-
-@app.route('/test-create', methods=['GET', 'POST'])
-def default_create():
-    return flask.render_template('create.html')
-
-
 @app.route('/login-submit', methods=['POST'])
 def login_submit():
     data = request.form
     username = data['username'].lower()
+    if ',' in username:
+        flash('You cannot have the character \',\' in your username. Please choose a different one.', 'danger')
+        return flask.redirect('/register')
     user = db.session.query(User).filter_by(username=username).first()
     private_id = hash_string(username + data['password'])
     if user is not None:
@@ -305,14 +298,6 @@ def login():
     db.session.commit()
     logout_user()
     return flask.render_template('login.html')
-
-
-@app.route('/test-sqlalchemy', methods=['GET', 'POST'])
-def test_alchemy():
-    results = db.session.query(Posts).all()
-    for r in results:
-        print(r.content)
-    return flask.redirect('/')
 
 
 if __name__ == '__main__':
