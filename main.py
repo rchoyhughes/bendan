@@ -97,9 +97,9 @@ def get_branch_data_file(tbtype):
         file_basename = 'users.tsv'
         server_path = ''
         w_file = open(server_path + file_basename, 'w')
-        w_file.write('username\tprivate_id\tauthenticated\n')
+        w_file.write('username\tprivate_id\tauthenticated\thasProfilePic\tprofilePicName\n')
         for row in data:
-            row_as_string = row.username + '\t' + row.private_id + '\t' + str(row.authenticated) + '\n'
+            row_as_string = row.username + '\t' + row.private_id + '\t' + str(row.authenticated) + '\t' + str(row.hasProfilePic)+ '\t' + str(row.profilePicName) + '\n'
             print(row_as_string)
             w_file.write(row_as_string)
 
