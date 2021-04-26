@@ -133,20 +133,29 @@ def upvote_post():
             downvoters = str(post.downvoters).split(',')
             if current_user.username in downvoters:
                 print('Change downvote to upvote')
-                allVoters.append(current_user.username)
+                if allVoters == ['']:
+                    setattr(post, "upvoters", current_user.username)
+                else:
+                    allVoters.append(current_user.username)
+                    allVoters = ','.join(allVoters)
+                    setattr(post, "upvoters", allVoters)
                 downvoters.remove(current_user.username)
-                allVoters = ','.join(allVoters)
-                downvoters = ','.join(downvoters)
-                setattr(post, "downvoters", downvoters)
-                setattr(post, "upvoters", allVoters)
+                if len(downvoters) == 0:
+                    setattr(post, "downvoters", '')
+                else:
+                    downvoters = ','.join(downvoters)
+                    setattr(post, "downvoters", downvoters)
                 setattr(post, "upvotes", post.upvotes + 2)
                 db.session.commit()
                 return json.dumps({'status': 'success', 'upvotes': post.upvotes})
             elif current_user.username in allVoters:
                 print('Remove upvote')
                 allVoters.remove(current_user.username)
-                allVoters = ','.join(allVoters)
-                setattr(post, "upvoters", allVoters)
+                if len(allVoters) == 0:
+                    setattr(post, "upvoters", '')
+                else:
+                    allVoters = ','.join(allVoters)
+                    setattr(post, "upvoters", allVoters)
                 setattr(post, "upvotes", post.upvotes - 1)
                 db.session.commit()
                 return json.dumps({'status': 'success', 'upvotes': post.upvotes})
@@ -185,20 +194,29 @@ def downvote_post():
             upvoters = str(post.upvoters).split(',')
             if current_user.username in upvoters:
                 print('Change upvote to downvote')
-                allVoters.append(current_user.username)
+                if allVoters == ['']:
+                    setattr(post, "downvoters", current_user.username)
+                else:
+                    allVoters.append(current_user.username)
+                    allVoters = ','.join(allVoters)
+                    setattr(post, "downvoters", allVoters)
                 upvoters.remove(current_user.username)
-                allVoters = ','.join(allVoters)
-                upvoters = ','.join(upvoters)
-                setattr(post, "upvoters", upvoters)
-                setattr(post, "downvoters", allVoters)
+                if len(upvoters) == 0:
+                    setattr(post, "upvoters", '')
+                else:
+                    upvoters = ','.join(upvoters)
+                    setattr(post, "upvoters", upvoters)
                 setattr(post, "upvotes", post.upvotes - 2)
                 db.session.commit()
                 return json.dumps({'status': 'success', 'upvotes': post.upvotes})
             elif current_user.username in allVoters:
                 print('Remove downvote')
                 allVoters.remove(current_user.username)
-                allVoters = ','.join(allVoters)
-                setattr(post, "downvoters", allVoters)
+                if len(allVoters) == 0:
+                    setattr(post, "downvoters", '')
+                else:
+                    allVoters = ','.join(allVoters)
+                    setattr(post, "downvoters", allVoters)
                 setattr(post, "upvotes", post.upvotes + 1)
                 db.session.commit()
                 return json.dumps({'status': 'success', 'upvotes': post.upvotes})
