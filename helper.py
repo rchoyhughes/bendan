@@ -3,6 +3,7 @@ import base64
 from datetime import timezone
 import datetime
 import math
+from PIL import Image
 
 
 def hash_string(string: str) -> str:
@@ -42,6 +43,24 @@ def time_string(post_timestamp: int) -> str:
             if diff_hours == 1:
                 return 'Posted 1 hour ago'
             return 'Posted ' + str(diff_hours) + ' hours ago'
+
+
+def make_img_square(filename):
+    im = Image.open(filename)
+    im = crop_max_square(im)
+    im.save(filename)
+
+
+def crop_center(pil_img, crop_width, crop_height):
+    img_width, img_height = pil_img.size
+    return pil_img.crop(((img_width - crop_width) // 2,
+                         (img_height - crop_height) // 2,
+                         (img_width + crop_width) // 2,
+                         (img_height + crop_height) // 2))
+
+
+def crop_max_square(pil_img):
+    return crop_center(pil_img, min(pil_img.size), min(pil_img.size))
 
 
 if __name__ == '__main__':

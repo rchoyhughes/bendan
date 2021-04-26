@@ -36,6 +36,11 @@ Base.prepare(db.engine, reflect=True)
 Posts = Base.classes.posts
 
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
 @login_manager.user_loader
 def user_loader(user_id):
     return db.session.query(User).filter_by(private_id=user_id).first()
@@ -339,10 +344,14 @@ def login_submit():
             user = User(username=username, private_id=private_id, authenticated=True, hasProfilePic=False)
         else:
             profile_pic = request.files['myPic']
+            if not allowed_file(profile_pic.filename):
+                flash('Profile pictures must be either in .jpg or .png format. Please choose another photo.', 'danger')
+                return flask.redirect('/register')
             file_extension = profile_pic.filename.split('.')[-1]
             filename = private_id + '.' + file_extension
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             profile_pic.save(path)
+            make_img_square(path)
             user = User(username=username, private_id=private_id, authenticated=True, hasProfilePic=True, profilePicName=filename)
         db.session.add(user)
         db.session.commit()
