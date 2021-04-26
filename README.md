@@ -1,7 +1,7 @@
 # bendan
-##by Rob Hughes and Ben Jiang for ECE 49595
+## by Rob Hughes and Ben Jiang for ECE 49595 ##
 
-###API Documentation:
+### API Documentation: ###
 
 **/<private_id>/feed**, {GET, POST}
 
