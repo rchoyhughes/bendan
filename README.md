@@ -3,6 +3,22 @@
 
 ### API Documentation: ###
 
+**/getTSVdump**, {GET, POST}
+
+Renders the TSV download page with two buttons for the TSV database download of the users table and posts table.
+
+**/getTSVfile/<tbtype>**, {GET}
+
+Processes and creates a TSV file of the requested table. Returns the file and triggers the file download.
+
+**/upvote**, {POST}
+
+Processes the upvote request submitted by the user pressing the upvote button on a post. Checks whether the user has upvoted a post and change status accordingly.
+
+**/downvote**, {POST}
+
+Processes the downvote request submitted by the user pressing the downvote button on a post. Checks whether the user has downvoted a post and change status accordingly.
+
 **/<private_id>/feed**, {GET, POST}
 
 Redirects user to the first page of their feed.

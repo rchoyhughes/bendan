@@ -109,15 +109,6 @@ def get_branch_data_file(tbtype):
     return send_file(server_path + file_basename, as_attachment=True)
 
 
-#     response = make_response(w_file,200)
-#     response.headers['Content-Description'] = 'File Transfer'
-#     response.headers['Cache-Control'] = 'no-cache'
-#     response.headers['Content-Type'] = 'text/tsv'
-#     response.headers['Content-Disposition'] = 'attachment; filename=%s' % file_basename
-#     response.headers['Content-Length'] = file_size
-#     return response
-
-
 @login_required
 @app.route('/upvote', methods=['POST'])
 def upvote_post():
